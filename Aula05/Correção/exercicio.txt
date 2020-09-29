@@ -1,0 +1,5 @@
+1) Considere a existência de duas filas A e B onde os elementos estão ordenados da seguinte forma: o maior deles está no começo da fila e o menor no final. Escreva um programa que crie uma fila com os elementos das duas filas A e B também ordenados.
+
+2) Implemente um programa que receba três filas: F, F_Impares e F_Pares, e separe todos os valores guardados em F de tal forma que os valores pares são movidos para a fila F_Pares e os valores ímpares são movidos para F_Impares.
+
+3. Implemente no exemplo de fila com lista encadeada do moodle para que utilize o Descritor/cabeçalho para armanzenar a soma, media e maior e menor elemento da lista, total de elementos na fila.

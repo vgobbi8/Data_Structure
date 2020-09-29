@@ -5,12 +5,24 @@
 #include <ctype.h>
 
 
-struct Node{
-	int num;
-	struct Node *prox;
-}; 
-typedef struct Node node;
+typedef struct Pessoa{
+	int codigo;
+	char nome[50];
+	int dia;
+	int mes;
+}Pessoa; 
 
+typedef struct nodo {
+	Pessoa pessoa;
+	nodo * proximo;
+	nodo * anterior;	
+};
+
+typedef struct LISTA{
+	int tamanho;
+	nodo * inicio;
+	nodo * fim;
+};
 
 int tam;
 
@@ -29,53 +41,81 @@ node* buscaElemento(node *LISTA, int opt);
 int main(void)
 {	
 	system("cls");
-    
-    node *LISTA = (node *) malloc(sizeof(node));
-	if(!LISTA){
+    node * ls;
+    node * ls_aux;
+    ls = (LISTA *) malloc(sizeof(LISTA));
+
+	if(!ls){
+		printf("Sem memoria disponivel!\n");
+		exit(1);
+	}
+    ls_aux = (LISTA *) malloc(sizeof(LISTA));
+	if(!ls_aux){
 		printf("Sem memoria disponivel!\n");
 		exit(1);
 	}
     else
     {
-    	inicia(LISTA);
-    	int opt;
+    	inicia(ls);
+    	inicia(ls_aux);
+    	int opc;
     	
     	do{
-    		opt=menu();
-    		opcao(LISTA,opt);
-    	}while(opt);
+    		opc=menu();
+			switch (opc){
+				case 1:
+					
+					break;
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					break;
+				case 5:
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+				default:
+					break;		
+			}			
+    	}while(opc);
     
     
-    	free(LISTA); //libera memoria (criar fun��o)
+    	free(LISTA); //libera memoria (criar fun??o)
     
         printf ("\n\n\n\nPressione qualquer tecla para finalizar o programa.....");    
         getch(); //Aguarda comando para sair do programa
 	}
 }
 //==============================================================================
-void inicia(node *LISTA)
+int menu(){
+	int opc;
+	system("cls");
+	printf("Selecione uma op��o\n");
+	printf("1- Inserir Elemento na lista\n");
+	printf("2 - Mostrar a lista\n");	
+	printf("3 - Remover elemento da lista\n");
+	printf("4 - Mostrar Tamanho\n");
+	printf("5 - Copiar\n");
+	printf("6 - Transfere\n");
+	printf("7 - Divide\n");
+	printf("0 - Finalizar\n");
+	scanf("%d",&opc);	
+	return opc;
+}
+
+void inicia(LISTA *l)
 {
-	LISTA->prox = NULL;
+	l->inicio = NULL;
+	l->fim = NULL;
 	tam=0;
 }
+
 //==============================================================================
-int menu(void)
-{
-	int opt;
-    system("cls"); //Limpa tela....	
-	printf("Escolha a opcao\n");
-    printf("0. Sair\n");
-	printf("1. Adiciona no inicio\n");
-	printf("2. Adiciona no final\n");
-	printf("3. Retira Elemento\n");
-	printf("4. Busca Elemento\n");
-	printf("5. Exibir Lista\n");
-	printf("6. Libera Memoria\n\n");
-	printf("Opcao: "); scanf("%d", &opt);        	
-	return opt;
-}
-//==============================================================================
-void opcao(node *LISTA, int op)
+void escolheOperacao(node *LISTA, int op)
 {
 	node *tmp;
 	int opt;
@@ -316,3 +356,19 @@ node* buscaElemento(node *LISTA, int opt)
        	
 }
 //==============================================================================
+
+Pessoa coletaDadosPessoa(){
+	Pessoa nova;
+	system("cls");
+	printf("Informe o codigo da pessoa");
+	scanf("%d",&nova.codigo);
+	printf("Informe o Nome da pessoa");
+	scanf("%d",&nova.nome);
+	printf("Informe o dia de aniversario da pessoa");
+	scanf("%d",&nova.dia);
+	printf("Informe o mes de aniversario da pessoa");
+	scanf("%d",&nova.mes);
+	return nova;
+}
+
+

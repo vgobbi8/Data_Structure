@@ -6,6 +6,7 @@
 #include <string.h>
 #include <conio.h>
 #include <ctype.h>
+#include <locale.h>
 #define max 50
 typedef char TEXTO[max];
 
@@ -51,12 +52,14 @@ int tamanho(LISTA *L);
 DADOS lerElemento();
 char menu();
 
+int procuraCodigo(int pmCodigo, LISTA * l);
 void reordenarLista(LISTA *l, chave_ordenacao chave);
 void inserePorCodigo(NODO *novo, NODO *anterior, NODO *corrente, LISTA *l);
 void inserePorNome(NODO *novo, NODO *anterior, NODO *corrente, LISTA *l);
 
 main()
 {
+	setlocale(LC_ALL,"portuguese");
   chave_ordenacao chave_atual;
   chave_atual = codigo;
   LISTA *inicio;
@@ -85,7 +88,12 @@ main()
       else
       {
         informa = lerElemento();
-        insere(inicio, informa, chave_atual);
+        if(!procuraCodigo(informa.codigo,inicio)){
+        	insere(inicio, informa, chave_atual);
+		} else {
+	   		printf("\nEste código já está em uso!\n");
+        	system("pause");		
+		}
       }
       break;
     case 'M':
@@ -157,21 +165,28 @@ main()
       break;
     case 'A':
       int esc;
-      printf("\nEscolha a chave: ");
-      printf("\n0 - CÃ³digo: ");
-      printf("\n1 - Nome: ");
-      scanf("%d", &esc);
-      if ((chave_ordenacao)esc == chave_atual)
-      {
-        printf("Chave nÃ£o alterada pois Ã© a mesma que a anterior!");
-      }
-      else
-      {
-        chave_atual = (chave_ordenacao)esc;
-        reordenarLista(inicio, chave_atual);
-        printf("\nLista reordenada:\n");
-        mostralista(inicio);
-      }
+
+      if (inicio == NULL){
+        printf("\nLista não inicializada!\n");
+	  } 
+	  else{
+	  	printf("\nEscolha a chave: ");
+      	printf("\n0 - CÃ³digo: ");
+      	printf("\n1 - Nome: ");
+      	scanf("%d", &esc);
+	  	if ((chave_ordenacao)esc == chave_atual)
+      	{
+      	  printf("\nChave não alterada pois é a mesma que a anterior!\n");
+      	}
+      	else
+      	{
+      	  chave_atual = (chave_ordenacao)esc;
+      	  reordenarLista(inicio, chave_atual);
+      	  printf("\nLista reordenada:\n");
+      	  mostralista(inicio);
+      	}
+  	  }
+      system("pause");
       break;
     case 'F':
       free(inicio);
@@ -203,7 +218,6 @@ char menu()
   return (toupper(getche()));
 }
 
-//funï¿½ï¿½o que abre o arquivo para leitura
 FILE *abreArquivo()
 {
   FILE *arq;
@@ -215,7 +229,6 @@ FILE *abreArquivo()
   return (arq);
 }
 
-////funï¿½ï¿½o que cria(recria) o arquivo para gravaï¿½ï¿½o
 FILE *criaArquivo()
 {
   FILE *arq;
@@ -225,13 +238,11 @@ FILE *criaArquivo()
   return (arq);
 }
 
-//funï¿½ï¿½o que fecha o arquivo
 void fecha(FILE *arq)
 {
   fclose(arq);
 }
 
-//funï¿½ï¿½o que grava lista no arquivo
 void grava(FILE *arq, LISTA *L)
 {
   NODO *p;
@@ -247,7 +258,6 @@ void grava(FILE *arq, LISTA *L)
   }
 }
 
-//funï¿½ï¿½o que le arquivo e coloca dados na lista
 void ler(FILE *arq, LISTA *L, chave_ordenacao chave)
 {
   DADOS registro;
@@ -259,7 +269,6 @@ void ler(FILE *arq, LISTA *L, chave_ordenacao chave)
   }
 }
 
-//funï¿½ï¿½o que cria a lista, sem cabeï¿½alho e inicializa primeiro elemento
 LISTA *cria()
 {
   LISTA *p;
@@ -355,27 +364,27 @@ int remove(LISTA *l, DADOS *v)
   }
 }
 
-//mostra os elementos da lista
 void mostralista(LISTA *L)
 {
   NODO *p;
   int conta = 0;
-  p = L->inicio; //p ï¿½ o ponteiro para navegaï¿½ï¿½o na lista
+  p = L->inicio; 
   while (p != NULL)
   {
     conta++;
     printf("Dados [%d]\n", conta);
     printf("Codigo %d \n", p->codigo);
     printf("Nome %s \n", p->nome);
-    p = p->proximo; //navegaï¿½ï¿½o na lista, p recebe o ponteiro do prï¿½ximo
+    p = p->proximo; 
   }
 }
 
 DADOS lerElemento()
 {
   DADOS info;
-  printf("\nDigite o codigo: ");
-  scanf("%d", &info.codigo);
+  	printf("\nDigite o codigo: ");
+  	scanf("%d", &info.codigo);
+  
   printf("\nDigite o nome: ");
   fflush(stdin);
   gets(info.nome);
@@ -393,70 +402,30 @@ int tamanho(LISTA *L)
   }
   return (t);
 }
-
 void reordenarLista(LISTA *l, chave_ordenacao chave)
 {
-  int eInicio=0;
-  int eFim =0;	
   NODO *corrente;
-  NODO *anterior;
-  int tam = tamanho(l);
-  NODO *aux = l->inicio;
-
   corrente = l->inicio;
-  while(corrente != NULL){
-    NODO * outro = corrente->proximo;
-	if(outro == l->fim) eFim= 1; else eFim = 0;
-    while(outro != NULL){
-      if(strcmp(corrente->nome , outro->nome)>0){
-        if(corrente == l->inicio) eInicio = 1; else eInicio = 0; 
-
-		corrente->proximo = outro->proximo;
-        outro->proximo = corrente;
-        if(eInicio) l->inicio = outro;
-        if(eFim) l->fim = outro;
-        
-      }
+  while (corrente != NULL)
+  {
+    NODO *outro = corrente->proximo;
+    while (outro != NULL)
+    {
+ 
+      if (((chave == codigo) && (corrente->codigo > outro->codigo)) || ((chave == nome) && (strcmp(corrente->nome, outro->nome) > 0)))
+      {
+      	TEXTO nome;
+		strcpy(nome,outro->nome);
+      	int cod = outro->codigo;
+		outro->codigo = corrente->codigo;
+      	strcpy(outro->nome,corrente->nome);      	
+		strcpy(corrente->nome, nome);
+      	corrente->codigo = cod;
+      }   	
       outro = outro->proximo;
     }
     corrente = corrente->proximo;
   }
-
-  //Recebe o inicio da lista
-  //for para fazer uma vez para cada item da lista
-  //corrente = l->inicio;
-  // if (chave == codigo)
-  // {
-  //   for (NODO *i = l->inicio; i != NULL; i = i->proximo)
-  //   {
-  //     corrente = i;
-  //     for (NODO *j = i->proximo; j != NULL; j = j->proximo)
-  //     {
-  //       if (corrente->codigo >= j->codigo)
-  //       {
-  //         anterior = j;
-  //         corrente->proximo = j->proximo;
-  //         anterior->proximo = corrente;
-  //       }
-  //     }
-  //   }
-  // }
-  // else //ORDENA POR NOME
-  // {
-  //   for (NODO *i = l->inicio; i->proximo != NULL; i = i->proximo)
-  //   {
-  //     corrente = i;
-  //     for (NODO *j = i->proximo; j != NULL; j = j->proximo)
-  //     {
-  //       if (strcmp(corrente->nome, j->nome) > 0)
-  //       {
-  //         anterior = j;
-  //         corrente->proximo = j->proximo;
-  //         anterior->proximo = corrente;
-  //       }
-  //     }
-  //   }
-  // }
 }
 
 void inserePorCodigo(NODO *novo, NODO *anterior, NODO *corrente, LISTA *l)
@@ -501,3 +470,12 @@ void inserePorNome(NODO *novo, NODO *anterior, NODO *corrente, LISTA *l)
       l->fim = novo;
   }
 }
+int procuraCodigo(int pmCodigo, LISTA * l){
+	NODO * corrente = l->inicio;
+	while(corrente != NULL){
+		if(corrente->codigo == pmCodigo) return 1;
+		corrente = corrente->proximo;
+	}
+	return 0;
+}
+
